@@ -24,6 +24,7 @@
 # Routing
     Router::$routes = array(
     	'/' => '/index',     # default controller when "/" is requested
+    	#'my-awesome-project' => 'portfolio/view/45',
     );
     
 # Match requested uri to any routes and instantiate controller
