@@ -8,10 +8,13 @@ class Image {
 	protected $mimetype;
 	
     /* 
-    Constructor
-    __construct is a Magic method (optional), called whenever an object is instantiated
-    Magic methods are reserved methods built into PHP, and prefixed with two underscores
+     * Constructor
+     * __construct is a Magic method (optional), 
+     * it's called whenever an object is instantiated
+     * Magic methods are reserved methods built into PHP, 
+     * and prefixed with two underscores
     */
+    /* Setting up the contruct to read the image*/
     public function __construct($filename) {
 
         # Read the image file to a binary buffer

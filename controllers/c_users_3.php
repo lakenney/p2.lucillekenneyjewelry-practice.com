@@ -108,42 +108,58 @@ class users_controller extends base_controller {
 	}
 
     public function logout() {
-    
-        // Generate and save a new token for next login
-    	$new_token = sha1(TOKEN_SALT.$this->user->email.Utils::generate_random_string());
-
-    	// Create the data array we'll use with the update method
-    	// In this case, we're only updating one field, so our array only has one entry
-    	$data = Array("token" => $new_token);
-
-    	// Do the update
-    	DB::instance(DB_NAME)->update("users", $data, "WHERE token = '".$this->user->token."'");
-
-    	// Delete their token cookie by setting it to a date in the past - effectively logging them out
-    	setcookie("token", "", strtotime('-1 year'), '/');
-
-    	// Send them back to the main index.
-    	Router::redirect("/");
-    	
-        // echo "This is the logout page";
+        echo "This is the logout page";
     }
 	
 	// Create a view that's in charge of displaying this information.
-	public function profile() {
-
-    	// If user is blank, they're not logged in; redirect them to the login page
-    	if(!$this->user) {
-        	Router::redirect('/users/login');
-    	}
-
-    	// If they weren't redirected away, continue:
-
-    	// Setup view
+    public function profile($user_name = NULL) {
+    
+    	// An instance of the master template was already created in the base
+    	#$template = View::instance('_v_template');
+    
+    // 	Recreated the Isolated view fragment using the master template _v_template
+    	// Pass our view fragment to the content on view page
+    	// Set up the View
     	$this->template->content = View::instance('v_users_profile');
-    	$this->template->title   = "Profile of".$this->user->first_name;
+    	$this->template->title = "Profile";
+    	
+    	// Create an array for all the client files
+    	// This is a method inside utilities library to help with this
+    	$client_files_head = Array(
+    		'/css/profile.css', 
+    		'/css/master.css'
+    		);	
 
-    	// Render template
+    	$this->template->client_files_head = Utils::load_client_files($client_files_head);
+  
+  		// Load client files
+  		$client_files_body = Array(
+    		'/js/profile.js' 
+    		);  	
+
+    	$this->template->client_files_body = Utils::load_client_files($client_files_body);
+
+    	
+    	// Pass the data to the View
+    	$this->template->content->user_name = $user_name;
+    	
+    	// So we just need to access this template set in the base controller
+    	// Display the View
     	echo $this->template;
-	}
+    
+    // Isolated view fragment
+    	// Call upon this view file and load it from my controller
+    	// instance returns whatever is in v_users_profile
+    	#$view = View::instance('v_users_profile');
+    	
+    	// Then pass data from my controller to the view 
+    	// Can pass it parameters on the fly
+    	#$view->user_name = $user_name;
+    	#$view->color = "red";
+    	
+    	$this->template->content = View::instance('v_users_profile');
+    	// Only when you're done with your code you can echo out view
+    	#echo $view;
+    }
 
 } # end of the class
