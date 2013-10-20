@@ -47,12 +47,15 @@ class users_controller extends base_controller {
     	echo 'You\'re signed up';        
     }
 
-    public function login() {
+    public function login($error = NULL) {
     
         // Setup view
         	$this->template->content = View::instance('v_users_login');
         	$this->template->title   = "Login";
-
+        	
+    	// Pass data to the view
+    		$this->template->content->error = $error;
+    		
     	// Render template
         	echo $this->template;
     
@@ -61,9 +64,9 @@ class users_controller extends base_controller {
     
     public function p_login() {
     
-    	echo '<pre>';
-		print_r($this->user);
-		echo '</pre>';
+    	#echo '<pre>';
+		#print_r($this->user);
+		#echo '</pre>';
 
     	// Sanitize the user entered data to prevent any funny-business (re: SQL Injection Attacks)
     	$_POST = DB::instance(DB_NAME)->sanitize($_POST);
@@ -84,7 +87,7 @@ class users_controller extends base_controller {
     	if(!$token) {
 
         	// Send them back to the login page
-        	Router::redirect("/users/login/");
+        	Router::redirect("/users/login/error");
 
     	// But if we did, login succeeded! 
     	} else {
@@ -141,9 +144,53 @@ class users_controller extends base_controller {
     	// Setup view
     	$this->template->content = View::instance('v_users_profile');
     	$this->template->title   = "Profile of".$this->user->first_name;
+    	
+    	// Create an array for all the client files
+    	// This is a method inside utilities library to help with this
+    	$client_files_head = Array(
+    		'/css/profile.css', 
+    		'/css/master.css'
+    	);	
 
-    	// Render template
+    	$this->template->client_files_head = Utils::load_client_files($client_files_head);
+  
+  		// Load client files
+  		$client_files_body = Array(
+    		'/js/profile.js' 
+    	);  	
+
+    	$this->template->client_files_body = Utils::load_client_files($client_files_body);
+  	
+    	// Pass the data to the View
+    	$this->template->content->user_name = $user_name;
+	// Or
+    	// In class suggestion of creating a variable to pass data
+    	#$content = View::instance('v_users_profile');
+    	#$content->user_name = $user_name;
+    	#$this->template->content = $content;
+    	  	
+    	// We just need to access it
+    	// Display the view
     	echo $this->template;
+    
+    	// Below is the isolated view fragment ... 
+    	// Above, we recreated this view and  passed it to the master template
+    	#$view = View::instance('v_users_profile');	
+    	// On the fly pass it a variable
+    	#$view->user_name = $user_name;
+    	//$view->color = "red";
+    	
+    	// You should only ever have one echo in you controllers 
+    	// and that is to echo at the end of the file
+    	#echo $view;
+    	
+    	#if($user_name == NULL) {
+        #    echo "No user specified";
+        #}
+        #else {
+        #    echo "This is the profile for ".$user_name;
+        #}
 	}
+
 
 } # end of the class

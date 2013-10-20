@@ -20,7 +20,7 @@ class practice_controller extends base_controller {
 	#echo DOC_ROOT."<br>";
 	
 	// Once we have access, we instantiate an object from that class
-	// and pass it a parameter
+	// and pass the parameter to the construct
 	$imageObj = new Image('http://placekitten.com/1000/1000');
 	
 	// Then we can use the methods in that class

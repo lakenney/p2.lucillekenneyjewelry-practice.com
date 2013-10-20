@@ -12,3 +12,4 @@
 <p>
 	<strong>Since everything is in working order, you should now delete <?php echo APP_PATH?>diagnostics.php</strong>
 </p>-->
+
